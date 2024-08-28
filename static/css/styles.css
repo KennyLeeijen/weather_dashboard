@@ -1,0 +1,41 @@
+body {
+    background-color: #f1f1f1;
+}
+
+.card {
+    border-radius: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    width: 60px;
+}
+
+h2, h3 {
+    font-weight: bold;
+}
+
+.card.bg-dark {
+    background-color: #333 !important;
+}
+
+p {
+    font-size: 1.2em;
+}
+
+.display-4 {
+    font-size: 3rem;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.card .weather-icon {
+    width: 100%;
+    height: auto;
+}
+
+.Temperatuur {
+    font-size: 6rem;
+}

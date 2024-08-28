@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Leaftlet css -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <title>{% block title %}Weer Dashboard{% endblock %}</title>
+</head>
+<body class="bg-dark">
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- Leaflet js -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize the map centered on a default location (e.g., Heesch)
+            var map = L.map('weather-map').setView([51.7336, 5.5267], 6);  // Adjust coordinates and zoom level
+
+            // Add OpenStreetMap tiles as the base layer
+            var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add OpenWeatherMap temperature layer (1.0 version)
+            var temperatureLayer = L.tileLayer('https://tile.openweathermap.org/map/temp/{z}/{x}/{y}.png?appid={{ API_KEY }}', {
+                attribution: 'Map data &copy; <a href="https://openweathermap.org">OpenWeatherMap</a>',
+                opacity: 0.5
+            });
+
+            // Add OpenWeatherMap clouds layer (1.0 version)
+            var cloudsLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png?appid={{ API_KEY }}', {
+                attribution: 'Map data &copy; <a href="https://openweathermap.org">OpenWeatherMap</a>',
+                opacity: 0.5
+            });
+
+            // Define overlay layers (these can be toggled on and off)
+            var overlayLayers = {
+                "Temperature": temperatureLayer,
+                "Clouds": cloudsLayer
+            };
+
+            // Add layer control to allow toggling between overlays
+            L.control.layers(null, overlayLayers).addTo(map);
+        });
+    </script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+</body>
+</html>

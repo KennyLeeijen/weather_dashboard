@@ -17,3 +17,6 @@ media/
 # OS generated files:
 .DS_Store
 Thumbs.db
+
+# secret keys
+.env

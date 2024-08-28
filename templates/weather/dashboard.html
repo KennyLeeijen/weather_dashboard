@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Weer Dashboard
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    {% if alerts %}
+        <div class="alert alert-danger" role="alert">
+            <h4>Weeralarm!</h4>
+            <ul class="mb-0">
+                {% for alert in alerts %}
+                    <li>
+                        <strong>{{ alert.event }}</strong>: {{ alert.description }}
+                        <small class="d-block text-muted">Van {{ alert.start|date:"d M H:i" }} tot {{ alert.end|date:"d M H:i" }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <form method="get" class="d-flex">
+                <input type="text" name="city" class="form-control me-2" placeholder="Zoek naar jouw favoriete stad"
+                    value="{{ city }}" required>
+                <button type="submit" class="btn btn-primary">Zoeken</button>
+            </form>
+        </div>
+    </div>
+    <!-- Top Row: City, Time and Main Weather Info -->
+    <div class="row mb-4">
+        <!-- City, Date, and Time -->
+        <div class="col-lg-4 mb-4">
+            <div class="card text-center p-4 shadow-sm rounded-4 h-100 d-flex justify-content-center">
+                <h2 class="fw-bold">{{ city }}</h2>
+                <h3 class="display-4">{{ time }}</h3>
+                <p>{{ current_date }}</p>
+                <div id="weather-map" style="height: 400px;"></div>
+            </div>
+        </div>
+        <!-- Main Weather Information -->
+        <div class="col-lg-8 mb-4">
+            <div class="card p-4 shadow-sm rounded-4 bg-dark text-white">
+                <div class="row align-items-center">
+                    <!-- Left side -->
+                    <div class="col-md-8 d-flex flex-column align-items-center justify-content-center">
+                        <!-- Temperature and Feels Like -->
+                        <div class="col-12 text-center">
+                            <h2 class="Temperatuur mb-0">{{ temperature|floatformat:0 }}°C</h2>
+                            <p class="Temperatuur_beschrijving mb-0">Voelt als: {{ feels_like|floatformat:0 }}°C</p>
+                        </div>
+                    
+                        <!-- Weather Icon and Description -->
+                        <div class="col-12 d-flex">
+                            <div class="col-6 d-flex flex-column justify-content-center align-items-center">
+                                <!-- Sunrise and Sunset -->
+                                <div class="col-12">
+                                    <!-- Sunrise -->
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="bi bi-sunrise fs-1"></i>
+                                        <p class="mb-0">Zonsopkomst: {{ sunrise|date:"H:i" }}</p>
+                                    </div>
+                                    <!-- Sunset -->
+                                    <div class="d-flex flex-column align-items-center">
+                                        <i class="bi bi-sunset fs-1"></i>
+                                        <p class="mb-0">Zonsondergang: {{ sunset|date:"H:i" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex flex-column align-items-center justify-content-center">
+                                <img src="http://openweathermap.org/img/wn/{{ icon }}@4x.png" alt="Weer icoon" class="weather-icon">
+                                <p class="h5 mb-0">{{ description | title }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right side -->
+                    <div class="col-md-4">
+                        <div class="row g-3 d-flex align-items-stretch">
+                            <!-- Humidity Card -->
+                            <div class="col-12">
+                                <div class="card text-center bg-dark text-white rounded-4 h-100 d-flex">
+                                    <div class="card-body d-flex flex-column justify-content-between">
+                                        <i class="bi bi-droplet" style="font-size: 2rem;"></i>
+                                        <p class="mt-2">Luchtvochtigheid: {{ humidity }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Wind Speed Card -->
+                            <div class="col-12">
+                                <div class="card text-center bg-dark text-white rounded-4 h-100 d-flex">
+                                    <div class="card-body d-flex flex-column justify-content-between">
+                                        <i class="bi bi-wind" style="font-size: 2rem;"></i>
+                                        <p class="mt-2">Wind: {{ wind_speed }} <span class="small">km/u</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Pressure Card -->
+                            <div class="col-12">
+                                <div class="card text-center bg-dark text-white rounded-4 h-100 d-flex">
+                                    <div class="card-body d-flex flex-column justify-content-between">
+                                        <i class="bi bi-speedometer" style="font-size: 2rem;"></i>
+                                        <p class="mt-2">Druk: {{ pressure }} hPa</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- UV Index Card -->
+                            <div class="col-12">
+                                <div class="card text-center bg-dark text-white rounded-4 h-100 d-flex">
+                                    <div class="card-body d-flex flex-column justify-content-between">
+                                        <i class="bi bi-brightness-high" style="font-size: 2rem;"></i>
+                                        <p class="mt-2">UV: {{ uv_index }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lower Row: 5-Day Forecast and Hourly Forecast -->
+    <div class="row">
+        <!-- Day Forecast -->
+        <div class="col-lg-12 mb-4">
+            <div class="card p-4 shadow-sm rounded-4 h-100 d-flex justify-content-center">
+                <h4 class="mb-3">Dagelijkse voorspelling</h4>
+                <div class="d-flex justify-content-between">
+                    {% for dag in daily_forecast %}
+                    <div class="text-center">
+                        <!-- Date: Full day name and date -->
+                        <p class="mb-0 fw-bold">{{ dag.date|date:"d M" }}</p> <!-- Day number and Month (e.g., 28 Aug) -->
+                        <!-- Weather icon -->
+                        <img src="http://openweathermap.org/img/wn/{{ dag.icon }}@2x.png" alt="Weer icoon">
+                        <!-- Day temperature -->
+                        <p class="mb-0">{{ dag.temperature|floatformat:0 }}°C</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- Hourly Forecast -->
+        <div class="col-lg-12 mb-4">
+            <div class="card p-4 shadow-sm rounded-4 h-100 d-flex justify-content-center">
+                <h4 class="mb-3">Uurlijkse voorspelling</h4>
+                <div class="d-flex justify-content-between">
+                    {% for uur in hourly_forecast|slice:":7" %}
+                    <div class="text-center">
+                        <!-- Convert timestamp to hour and minutes -->
+                        <p class="mb-0 fw-bold">{{ uur.dt|date:"H:i" }}</p>
+                        <!-- Weather icon -->
+                        <img src="http://openweathermap.org/img/wn/{{ uur.icon }}@2x.png" alt="Weer icoon">
+                        <!-- Temperature -->
+                        <p class="mb-0">{{ uur.temperature|floatformat:0 }}°C</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
