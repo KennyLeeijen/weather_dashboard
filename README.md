@@ -27,20 +27,23 @@ Follow these steps to set up the project on your local machine.
 ```bash
 git clone https://github.com/yourusername/weather-dashboard.git
 cd weather-dashboard
+```
+### 2. Create and Activate a Virtual Environment
 
-2. Create and Activate a Virtual Environment
 To keep your dependencies isolated, it's recommended to use a virtual environment.
 
 On Linux/MacOS:
-bash
 Copy code
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 On Windows:
-bash
 Copy code
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 3. Install the Dependencies
 Install the necessary Python packages using pip.
 
